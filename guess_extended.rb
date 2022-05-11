@@ -399,24 +399,33 @@ end
 #-------------------------------------------------
 def show_scoreboard
     clear_screen
+    log LOG, __method__, "scoreboard open"
 
-    nr_pos = $config['sb_rec_nr'].to_i > $scoreboard.size \
-            ? $scoreboard.size \
-            : $config['sb_rec_nr'].to_i
-    
-    $scoreboard = $scoreboard.sort_by {|k, v| v}.to_h
-    
-    puts "pos |#{" player".ljust 32}| tries".yellow
-    
-    for i in 1..nr_pos do
-        puts "#{i.to_s.ljust(4).cyan}| #{$scoreboard.keys[i-1].ljust 31}| #{$scoreboard.values[i-1].to_s.green}"
+    if $scoreboard.size != 0
+        nr_pos = $config['sb_rec_nr'].to_i > $scoreboard.size \
+                ? $scoreboard.size \
+                : $config['sb_rec_nr'].to_i
+        log LOG, __method__, "scoreboard will display #{nr_pos} records"
+        
+        $scoreboard = $scoreboard.sort_by {|k, v| v}.to_h
+        
+        puts "pos |#{" player".ljust 32}| tries".yellow
+        
+        for i in 1..nr_pos do
+            puts "#{i.to_s.ljust(4).cyan}| #{$scoreboard.keys[i-1].ljust 31}| #{$scoreboard.values[i-1].to_s.green}"
+        end
+
+        log SUCCESS, __method__, "scoreboard in display"
+    else
+        puts "Scoreboard is empty right now, play a game to fill it up ;)".yellow
+        log WARNING, __method__, "scoreboard has nothing to display"
     end
     
     print "=> press any key to return to main menu"
+    log LOG, __method__, "awaiting user input to return to main menu"
     
     STDIN.getch
-    
-    clear_screen
+    log LOG, __method__, "returning to main menu"
     
     menu
     nil
