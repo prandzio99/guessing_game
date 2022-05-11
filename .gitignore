@@ -7,3 +7,11 @@
 # logs
 game_logs/
 *.log
+
+# archive files
+*.tar
+*.tar.gz
+*.zip
+*.tgz
+*.7z
+*.rar
