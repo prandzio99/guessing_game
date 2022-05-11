@@ -77,7 +77,11 @@ def log type, called_from, message
     time_logged = Time.now.strftime DATE_FORMAT
     logged_msg = "#{type}#{time_logged} in function \"#{called_from}\": #{message}"
 
-    File.open("game_#{$session_start}.log", mode: "a") {
+    if not Dir.exists? "game_logs"
+        Dir.mkdir "game_logs"
+    end
+
+    File.open("game_logs/game_#{$session_start}.log", mode: "a") {
         |log_file| log_file.write("#{logged_msg}\n")
     }
     

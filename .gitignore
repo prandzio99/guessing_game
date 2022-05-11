@@ -1,3 +1,9 @@
-*.log
+# database files
 *.db
+
+# backup files
 *.bak
+
+# logs
+game_logs/
+*.log
