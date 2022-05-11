@@ -16,6 +16,7 @@
 require 'rubygems'
 require 'parseconfig'
 require 'colorize'
+require 'io/console'
 
 
 # log constants
@@ -393,7 +394,28 @@ end
 #   X set in config
 #-------------------------------------------------
 def show_scoreboard
+    clear_screen
+
+    nr_pos = $config['sb_rec_nr'].to_i > $scoreboard.size \
+            ? $scoreboard.size \
+            : $config['sb_rec_nr'].to_i
+    
+    $scoreboard = $scoreboard.sort_by {|k, v| v}.to_h
+    
+    puts "pos |#{" player".ljust 32}| tries".yellow
+    
+    for i in 1..nr_pos do
+        puts "#{i.to_s.ljust(4).cyan}| #{$scoreboard.keys[i-1].ljust 31}| #{$scoreboard.values[i-1].to_s.green}"
+    end
+    
+    print "=> press any key to return to main menu"
+    
+    STDIN.getch
+    
+    clear_screen
+    
     menu
+    nil
 end
 
 
@@ -448,7 +470,7 @@ def menu
         log LOG, __method__, "menu in display"
         choice = gets.chomp.to_i
         log LOG, __method__, "received user input : #{choice}"
-        if [1, 5].include? choice
+        if [1, 2, 5].include? choice
             break
         end
         error = "!!! This menu option is not supported !!!\n\n".red
