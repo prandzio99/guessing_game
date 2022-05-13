@@ -8,7 +8,7 @@ if [ -f "/usr/bin/ruby" ]; then
     echo -en "${GREEN}OK.${END}\n"
 else
     echo -en "${YELLOW}installing...${END}\n"
-    sudo apt-get --assume-yes install ruby
+    sudo apt-get --assume-yes install ruby-full
 fi
 echo -en "Installed: "
 ruby --version

@@ -14,7 +14,7 @@ Then to play just type in:
 ./guess_extended.rb
 ```
 
-### In some cases setup.sh might not work
+### <span style="color:red; font-weight: bold">!!! In some cases setup.sh might not work !!!</span>
 You can simply install ruby and required gems with these commands
 ```
 sudo apt-get install ruby-full
@@ -26,7 +26,13 @@ The game is a simple number guessing fun, by default in the range of 0 - 1000
 
 As of now, the game has some modifiable settings through `game.cfg`.
 
-There's also a scoreboard updated locally, that is every time you input a different name, a new record will appear.
+There's also a scoreboard updated locally, that is - every time you input a different name in the game, a new record will appear.
+
+### Planned features
+- game statistics e.g. average number of attempts needed to guess
+- multi-player gameplay (host player and additional player(s))
+- scoreboards for different game settings
+- GUI? maybe?
 
 ## Known bugs
 1. Hints might not be accurate when it comes to how close you are to the solution.

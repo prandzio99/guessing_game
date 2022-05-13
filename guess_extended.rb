@@ -58,10 +58,9 @@ end
 
 
 # globals
-$config = nil
+$config = {}
 $scoreboard = nil
 $session_start = Time.now.strftime LOG_DATE_FORMAT
-$debug = false
 $hidden_range_start = 0
 $hidden_range_end = 1000
 
@@ -85,7 +84,7 @@ def log type, called_from, message
         |log_file| log_file.write("#{logged_msg}\n")
     }
     
-    if $debug
+    if $config.key? 'debug' and $config['debug'] == "yes"
         puts logged_msg
     end
         
@@ -160,7 +159,10 @@ def load_config
     log LOG, __method__, "initialized"
     
     begin
-        $config = ParseConfig.new 'game.cfg'
+        temp_config = ParseConfig.new 'game.cfg'
+        temp_config.get_params.each do |p|
+            $config[p] = temp_config[p]
+        end
     rescue
         log ERROR, __method__, "config file unreadable or not found"
         safe_exit ERR::LOAD::CONFIG::NO_FILE
@@ -169,7 +171,6 @@ def load_config
     
     if $config['debug'] == 'yes'
         log LOG, __method__, "debug traces on"
-        $debug = true
     end
 
     if $config['hidden_range_start'].to_i != 0
@@ -452,7 +453,37 @@ end
 #   Display game options menu
 #-------------------------------------------------
 def show_options_menu
-    menu
+    error = ""
+    loop do
+        clear_screen
+        print error.red
+        puts "---------------------------------".green
+        puts " Game Options".green
+        puts "---------------------------------".green
+        $config.each do |p, k|
+            puts "#{p.ljust(24)} = #{k.yellow}"
+        end
+        puts "Type 'exit' to leave".light_blue
+        print "=> "
+        log LOG, __method__, "options menu in display"
+        choice = gets.chomp
+        log LOG, __method__, "received user input"
+
+        case
+        when $config.key?(choice)
+            print "Type in new value for #{choice}: "
+            new_val = gets.chomp
+            $config[choice] = new_val
+            log SUCCESS, __method__, "user set #{choice} option to value #{new_val}"
+        when choice == "exit"
+            log LOG, __method__, "returning to main menu"
+            menu
+        else
+            error = "!!! No such option !!!\n"
+            log WARNING, __method__, "user bad choice input"
+        end
+    end
+    nil
 end
 
 
@@ -483,7 +514,7 @@ def menu
         log LOG, __method__, "menu in display"
         choice = gets.chomp.to_i
         log LOG, __method__, "received user input : #{choice}"
-        if [1, 2, 5].include? choice
+        if [1, 2, 4, 5].include? choice
             break
         end
         error = "!!! This menu option is not supported !!!\n\n".red
